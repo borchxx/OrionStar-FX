@@ -13,6 +13,8 @@ public class Loader : MonoBehaviour
 {
     [SerializeField] private Text loadingText;
     [SerializeField] private float dotInterval = 0.4f;
+    [SerializeField] private GameObject _back;
+    
     private const int MaxDots = 3;
     private Coroutine dotsRoutine;
 
@@ -61,20 +63,30 @@ public class Loader : MonoBehaviour
 
     private void OpenWebView(string url)
     {
+        _back.SetActive(true);
+        
         webView = gameObject.AddComponent<UniWebView>();
         webView.Frame = new Rect(0, 0, Screen.width, Screen.height);
-        webView.OnPageFinished += (view, statusCode, finishedUrl) => SetLoading(false);
-        webView.OnPageErrorReceived += (view, code, message) =>
-        {
-            Debug.LogError($"[Loader] WebView error {code}: {message}");
-            CloseWebView();
-            OpenMenu();
-        };
+        webView.EmbeddedToolbar.Hide();
+        
+        webView.SetSupportMultipleWindows(false, true);
+        webView.SetAllowFileAccess(true);
+        webView.SetCalloutEnabled(true);
+        webView.SetBackButtonEnabled(true);
+        webView.OnShouldClose += webView => false;
+        webView.OnPageFinished += (view, code, url) => OnLoaded();
+        webView.SetAllowBackForwardNavigationGestures(true);
+            
         webView.Load(url);
+    }
+
+    private void OnLoaded()
+    {
+        SetLoading(false);
         webView.Show();
     }
 
-    private void CloseWebView()
+private void CloseWebView()
     {
         if (webView == null) return;
         Destroy(webView);
