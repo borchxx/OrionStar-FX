@@ -34,7 +34,7 @@ public class LeftRightMovementByInputPanel : MonoBehaviour
         inputPanel.pointerUp
             .Subscribe(pos =>
             {
-                rb.velocity = new Vector2(0, rb.velocity.y);
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             })
             .AddTo(this);
     }

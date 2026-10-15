@@ -2,7 +2,9 @@
 //using Facebook.Unity.Settings;
 using Sirenix.OdinInspector;
 using UnityEditor;
+#if UNITY_ANDROID
 using UnityEditor.Android;
+#endif
 using UnityEditor.Build;
 using UnityEngine;
 
@@ -46,9 +48,11 @@ public class MyProjectSettings : ScriptableObject
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, packageName);
         PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions)targetSdkVersion;
 
+#if UNITY_ANDROID
         var icons = PlayerSettings.GetPlatformIcons(NamedBuildTarget.Android, AndroidPlatformIconKind.Adaptive);
         icons[0].SetTextures(icon, icon);
         PlayerSettings.SetPlatformIcons(NamedBuildTarget.Android, AndroidPlatformIconKind.Adaptive, icons);
+#endif
 
         //appsFlyerObject.devKey = devKey;
         //EditorUtility.SetDirty(appsFlyerObject);
